@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import api from '@/api';
+import apiHttp from '@/api';
+import getPayments from '@/mocks/getPayments';
+
+const api = process.env.VUE_APP_USE_MOCKS ? { getPayments } : apiHttp;
 
 Vue.use(Vuex);
 
@@ -36,6 +39,7 @@ export default new Vuex.Store({
 
         if (Array.isArray(data)) {
           commit('setState', { data });
+          commit('setState', { isCached: true });
         }
       } catch (e) {
         // eslint-disable-next-line no-alert
@@ -43,6 +47,9 @@ export default new Vuex.Store({
       } finally {
         commit('setState', { isLoading: false });
       }
+    },
+    clearCache({ dispatch }) {
+      dispatch('load');
     },
   },
 });
